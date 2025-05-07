@@ -1,0 +1,47 @@
+import React , {useState, useEffect} from 'react';
+const TodoList = () => {
+    //입력
+    const [inputValue, setInputValue] = useState('');
+    const [checkEnter, setCheckEnter] = useState(false);
+    const [list, setList] = useState([]);
+
+    const toggleCheck = (index) => {
+        const newList = [...list];
+        newList[index].checked = !newList[index].checked;
+        setList(newList);
+      };
+
+      const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && inputValue.trim() !== '') {
+          setList([...list, { text: inputValue, checked: false }]);
+          setInputValue(''); // 입력창 비우기
+        }
+      };
+    
+    return (
+        <div>
+            <input 
+                type = "text"
+                value = {inputValue}
+                onChange = {(e) => setInputValue(e.target.value)}
+                onKeyDown = {handleKeyDown}
+                placeholder = "할 일을 입력하세요."
+            />
+            {list.map((item, index) => (
+                <li key={index}>
+                <label>
+                <input 
+                    type="checkbox" 
+                    checked={item.checked} 
+                    onClick={() => {toggleCheck(index)
+                    setCheckEnter(false);
+                    }} 
+                    />
+                {item.checked ? <s>{item.text}</s> : item.text}
+                </label>
+                </li>
+            ))}
+        </div>
+    )
+}
+export default TodoList;   
