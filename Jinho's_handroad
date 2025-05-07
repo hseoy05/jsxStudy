@@ -1,0 +1,60 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const TodoList = () => {
+    const [email, setEmail] = useState('');
+    const [inputEmail, setInputEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [inputPassword, setInputPassword] = useState('');
+
+    const handleSubmit = async () => {
+        const response = await axios.post('https://jsonplaceholder.typicode.com/posts', {
+            email: email,
+            password: password
+        }).then((response) => {
+            alert('성공적으로 POST 요청을 보냈습니다!');
+            localStorage.setItem("token", "logintoken123");
+            window.location.href = '/';
+        }).catch((error) => {
+            alert('서버와 통신 중 오류가 발생했습니다.');
+            console.error('Error:', error);
+        })
+
+    };
+
+
+    return (
+        <div>
+            <input
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)} placeholder="Enter your task"
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        setInputEmail(email);
+                        setEmail('');
+                    }
+                }}
+            /><br>
+            </br>
+            {inputEmail && <p>{inputEmail}</p>}
+            <input
+                type="text"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)} placeholder="Enter your task"
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        setInputPassword(password);
+                        setEmail('');
+                    }
+                }}
+            /><br>
+            </br>
+            {inputPassword && <p>{inputPassword}</p>}
+            <br></br>
+            <button onClick={handleSubmit}>로그인</button>
+        </div>
+    )
+}
+
+export default TodoList;
