@@ -1,0 +1,42 @@
+import React , {useState, useEffect} from 'react';
+import axios from 'axios';
+
+
+const TodoList = () => {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+      axios
+        .get('https://jsonplaceholder.typicode.com/posts/1')
+        .then((response) => {
+          setData(response.data);
+          console.log(response.status);
+        })
+        .catch((error) => {
+          console.error('에러 발생:', error);
+            // console.log('에러 발생:', error.status);
+        });
+    }, []);
+
+    const printData = () => {
+        if (data) {
+            return (<p>
+                <strong>제목:</strong> {data.title} <br/>
+                <strong>내용:</strong> {data.body} <br/>
+                <strong>작성자:</strong> {data.userId} <br/>
+                <strong>아이디:</strong> {data.id} <br/>
+                <strong>URL:</strong> {data.url} <br/>
+            </p>)
+        } else {
+            console.log('데이터가 없습니다.');
+        }
+    }
+  
+    return (
+      <div>
+        <h3>Axios로 가져온 데이터:</h3>
+        {data ? printData() : '로딩 중...'}
+      </div>
+    );
+}
+export default TodoList;   
