@@ -1,0 +1,113 @@
+import React, { useState } from 'react';
+import './Calender.css';
+
+const Calendar = () => {
+    const imageList = [
+        "https://png.pngtree.com/background/20230519/original/pngtree-landscape-wallpaper-2600x2560-picture-image_2659095.jpg",
+        "https://png.pngtree.com/background/20230610/original/pngtree-three-puppies-with-their-mouths-open-are-posing-for-a-photo-picture-image_3054035.jpg",
+        "https://png.pngtree.com/background/20230522/original/pngtree-waterfall-flowing-through-the-forest-in-a-natural-setting-picture-image_2695470.jpg",
+        "https://as2.ftcdn.net/v2/jpg/02/34/86/01/1000_F_234860197_CH2F23rU2F7nbJ0Ng38k7MKvDhccHpnJ.jpg"
+      ];
+
+
+      const [selectedImage, setSelectedImage] = useState(null);
+
+      const DateClick = (day) => {
+        setSelectedDate(new Date(currentYear, currentMonth, day));
+        const randomIndex = Math.floor(Math.random() * imageList.length);
+        setSelectedImage(imageList[randomIndex]);
+      };
+      
+  const today = new Date();
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
+  const getStartDay = (year, month) => new Date(year, month, 1).getDay();
+
+  const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+  const startDay = getStartDay(currentYear, currentMonth);
+
+  const prevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(currentYear - 1);
+    } else {
+      setCurrentMonth(currentMonth - 1);
+    }
+  };
+
+  const nextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(currentYear + 1);
+    } else {
+      setCurrentMonth(currentMonth + 1);
+    }
+  };
+
+  const handleDateClick = (day) => {
+    setSelectedDate(new Date(currentYear, currentMonth, day));
+  };
+
+  const renderCalendarCells = () => {
+    const cells = [];
+    for (let i = 0; i < startDay; i++) {
+      cells.push(<td key={`empty-${i}`}></td>);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(currentYear, currentMonth, day);
+      const isToday = today.toDateString() === date.toDateString();
+      const isSelected = selectedDate && selectedDate.toDateString() === date.toDateString();
+
+      cells.push(
+        <td key={day}>
+          <button
+            className={`date-btn ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}`}
+            onClick={() => DateClick(day)}
+          >
+            {day}
+          </button>
+        </td>
+      );
+    }
+
+    const rows = [];
+    for (let i = 0; i < cells.length; i += 7) {
+      rows.push(<tr key={i}>{cells.slice(i, i + 7)}</tr>);
+    }
+    return rows;
+  };
+
+  return (
+    <div className="calendar-container">
+      <h2>{currentYear}년 {currentMonth + 1}월</h2>
+      <div className="nav-buttons">
+        <button onClick={prevMonth}>&lt; 이전</button>
+        <button onClick={nextMonth}>다음 &gt;</button>
+      </div>
+
+      <table className="calendar-table">
+        <thead>
+          <tr>
+            {['일', '월', '화', '수', '목', '금', '토'].map((d, idx) => (
+              <th key={idx}>{d}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>{renderCalendarCells()}</tbody>
+      </table>
+
+      {selectedDate && (
+        <div className="selected-info">
+          <p>선택한 날짜: {selectedDate.toLocaleDateString()}</p>
+          {selectedImage && <img src={selectedImage} alt="랜덤 이미지" className="calendar-image" />}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Calendar;
